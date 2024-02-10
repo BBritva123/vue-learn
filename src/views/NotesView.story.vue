@@ -4,10 +4,10 @@
 
 <template>
   <Story>
-    <HomeView />
+    <NotesView />
   </Story>
 </template>
 
 <script setup>
-import HomeView from '@/views/HomeView.vue'
+import NotesView from '@/views/NotesView.vue'
 </script>
