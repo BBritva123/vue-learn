@@ -1,0 +1,30 @@
+{
+  "name": "first",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "histoire:dev": "histoire dev",
+    "histoire:build": "histoire build",
+    "histoire:preview": "histoire preview"
+  },
+  "dependencies": {
+    "@vueuse/core": "^10.7.2",
+    "marked": "^12.0.0",
+    "pinia": "^2.1.7",
+    "vue": "^3.4.15",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {
+    "@histoire/plugin-vue": "^0.17.9",
+    "@vitejs/plugin-vue": "^5.0.3",
+    "eslint": "^8.49.0",
+    "eslint-plugin-vue": "^9.17.0",
+    "histoire": "^0.17.9",
+    "vite": "^5.0.11"
+  }
+}
