@@ -19,6 +19,7 @@ const stages = {
   14: 500_000,
   15: 1_000_000,
 };
+const variantQuestionSymbols = ['A', 'B', 'C', 'D']
 
 const helpers = reactive({
   half: {
@@ -237,9 +238,12 @@ const doAnswer = (variant) => {
           </div>
         </section>
         <section class="helpers__wrapper">
-          <button @click="help.activate()" :disabled="!help.isActive" v-for="help in helpers">
+          <transition-group name="helpers" :tag="button">
+            <button @click="help.activate()" :disabled="!help.isActive" v-for="help in helpers" :key="help.name">
             {{ help.name }}
           </button>
+          </transition-group>
+          
         </section>
       </div>
 
@@ -254,14 +258,18 @@ const doAnswer = (variant) => {
           <h2>
             {{ currentQuestion.question }}
           </h2>
-          <button @click="doAnswer(variant)" class="question__variant"
-            v-for="(variant, variantKey) in currentQuestionVariants" :disabled="fiftyFiftyQuestionVariants[variantKey] == '' && helpers.half.isRun
-              " :key="variant">
-            <span v-if="fiftyFiftyQuestionVariants[variantKey] !== '' || !helpers.half.isRun">{{
-              variant
-            }}</span>
-            <span v-else>&nbsp;</span>
-          </button>
+          <div class="button__wrap">
+            <button @click="doAnswer(variant)" class="question__variant"
+              v-for="(variant, variantKey) in currentQuestionVariants" :disabled="fiftyFiftyQuestionVariants[variantKey] == '' && helpers.half.isRun
+                " :key="variant">
+              <span v-if="fiftyFiftyQuestionVariants[variantKey] !== '' || !helpers.half.isRun">
+              {{ variantQuestionSymbols[variantKey] }} :{{ index }}
+              {{
+                variant
+              }}</span>
+              <span v-else>&nbsp;</span>
+            </button>
+          </div>
         </article>
       </section>
     </div>
@@ -273,6 +281,29 @@ const doAnswer = (variant) => {
   display: flex;
   justify-content: space-around;
   align-items: center;
+}
+
+.question__wrapper {
+  width: 50%;
+}
+
+.button__wrap {
+  display: grid;
+  grid-template-columns: 45% 45%;
+  align-content: center;
+  justify-content: space-between;
+  align-items: center;
+  justify-items: stretch;
+}
+
+.question__variant {
+  margin: 10px;
+  width: 100%;
+  height: 35px;
+  border: none;
+  border-radius: 15px;
+  color: #f9f9f9;
+  background-color: rgb(7, 8, 70);
 }
 
 .stages {
@@ -292,5 +323,16 @@ const doAnswer = (variant) => {
 
 .helpers__wrapper {
   margin-top: 20px;
+}
+
+.helpers-enter-active,
+.helpers-leave-active {
+  transition: all 0.3s ease-in-out;
+}
+
+.helpers-enter-from,
+.helpers-leave-to {
+  transform: translateX(30px);
+  opacity: 0;
 }
 </style>
