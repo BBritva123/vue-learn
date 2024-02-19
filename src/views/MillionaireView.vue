@@ -216,13 +216,29 @@ const fiftyFiftyQuestionVariants = computed(() => {
   });
 });
 
-const doAnswer = (variant) => {
-  if (variant == currentQuestion.value.variants[1]) {
-    stage.value++;
-  }
-  Object.values(helpers).forEach(element => {
-    element.isRun ? element.disactive() : null
-  });
+const isAcceptedVariant = ref(null)
+const isCorrectVariant = ref(null)
+const doAnswer = (variant, variantKey) => {
+  isAcceptedVariant.value = variantKey
+  return new Promise(resolve => {
+    setTimeout(resolve, 1000)
+
+  })
+    .then(response => {
+      isCorrectVariant.value = currentQuestion.value.variants[1]
+      return new Promise(resolve => setTimeout(resolve, 1000))
+    })
+    .then(() => {
+      if (variant == currentQuestion.value.variants[1]) {
+        stage.value++;
+      }
+      else stage.value=1
+      Object.values(helpers).forEach(element => {
+        element.isRun ? element.disactive() : null
+      });
+      isCorrectVariant.value = null
+      isAcceptedVariant.value = null
+    })
 };
 </script>
 
@@ -238,12 +254,12 @@ const doAnswer = (variant) => {
           </div>
         </section>
         <section class="helpers__wrapper">
-          <transition-group name="helpers" :tag="button">
-            <button @click="help.activate()" :disabled="!help.isActive" v-for="help in helpers" :key="help.name">
-            {{ help.name }}
-          </button>
+          <transition-group name="helpers">
+            <button @click="help.activate()" :class="{ helpers }" :disabled="!help.isActive" v-for="help in helpers"
+              :key="help.name">
+              {{ help.name }}
+            </button>
           </transition-group>
-          
         </section>
       </div>
 
@@ -259,14 +275,15 @@ const doAnswer = (variant) => {
             {{ currentQuestion.question }}
           </h2>
           <div class="button__wrap">
-            <button @click="doAnswer(variant)" class="question__variant"
+            <button @click="doAnswer(variant, variantKey)" class="question__variant"
+              :class="{ 'question__variant--accepted': isAcceptedVariant === variantKey, 'question__variant--correctly': isCorrectVariant === variant }"
               v-for="(variant, variantKey) in currentQuestionVariants" :disabled="fiftyFiftyQuestionVariants[variantKey] == '' && helpers.half.isRun
                 " :key="variant">
               <span v-if="fiftyFiftyQuestionVariants[variantKey] !== '' || !helpers.half.isRun">
-              {{ variantQuestionSymbols[variantKey] }} :{{ index }}
-              {{
-                variant
-              }}</span>
+                {{ variantQuestionSymbols[variantKey] }} :{{ index }}
+                {{
+                  variant
+                }}</span>
               <span v-else>&nbsp;</span>
             </button>
           </div>
@@ -325,6 +342,36 @@ const doAnswer = (variant) => {
   margin-top: 20px;
 }
 
+button {
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+  background-color: #18306d;
+  color: #c6bfbf;
+  transition: color .3s ease;
+}
+
+button:hover {
+  color: #fff;
+  outline: 1px solid rgb(192, 83, 43);
+  background-color: rgb(192, 83, 43);
+
+}
+
+.helpers {
+  margin: 5px;
+  padding: 5px;
+  transition: color .3s ease, outline .3s ease;
+}
+
+.question__variant--accepted {
+background-color: rgb(255, 69, 0);
+}
+
+.question__variant--correctly {
+  background-color: rgb(4, 133, 4);
+}
+
 .helpers-enter-active,
 .helpers-leave-active {
   transition: all 0.3s ease-in-out;
@@ -334,5 +381,4 @@ const doAnswer = (variant) => {
 .helpers-leave-to {
   transform: translateX(30px);
   opacity: 0;
-}
-</style>
+}</style>
